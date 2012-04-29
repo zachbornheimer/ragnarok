@@ -196,7 +196,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.1',
+              VERSION               => '0.7.2',
              };    ## end constant declarations
 
 ### Module Info
@@ -251,9 +251,8 @@ MAIN: {
         _makeKey(\$Key);
         $madeKey = 1;
     }
-
     print _generatekey($AboutKey) if ($generatekey && $AboutKey);
-    print _generatecode($AboutCode) if ($generatecode && $Key && $AboutCode);
+    print _generatecode($AboutCode) if ($generatecode && ($AboutKey || $Key) && $AboutCode);
     print _generateproof() if ($generateproof && $Key && $Code);
     print _generateircode() if ($installcode || $removalcode);
     print _isValidInstallRemovalCode($IRCode) if ($validator && $IRCode);
@@ -455,7 +454,7 @@ sub _areValidCLIOptions {
 
     my %correctCommandCombinations = (
                                       'generatekey_aboutkey'       => defined($generatekey   && $AboutKey),
-                                      'generatecode_aboutcode_key' => defined($generatecode  && $AboutCode && $Key),
+                                      'generatecode_aboutcode_key' => defined($generatecode  && $AboutCode && ($Key || $AboutKey)),
                                       'generateproof_key_code'     => defined($generateproof && $Key && $Code),
                                       'generateuname'              => defined($generateupass && $username && $password),
                                       'validator_ircode'           => defined($validator     && $IRCode),
@@ -579,7 +578,9 @@ sub _fix {
 
 sub _generatecode {
     my $aboutcode = shift;
-    _generatekey($AboutKey) if ($Key != "");
+    if (! ($Key)) {
+        $Key = _generatekey($AboutKey);
+    }
     if ($Key) {
         my $code = _generatekey($aboutcode . $Key);
         _encrypt(\$code);
