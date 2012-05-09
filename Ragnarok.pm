@@ -196,7 +196,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.2',
+              VERSION               => '0.7.3',
              };    ## end constant declarations
 
 ### Module Info
@@ -312,8 +312,6 @@ sub properties {
     my $self = shift;
     my $type = shift;    # first argument
     return E_INVALID_PROPERTY if ($type > 5);
-
-    use Switch;
 
     # if two arguments are given, it sets the first to the second
     # then returns.  If only one is given, it just returns.
