@@ -143,9 +143,9 @@ use Digest::SHA qw(sha384_hex);
 use Math::Round;
 use Getopt::Long;
 use Carp;
+use v5.10;
 require constant;
 require Cwd;
-require Switch;
 
 #use diagnostics-verbose;
 
@@ -187,10 +187,10 @@ use constant {
               GENERATE_PROOF        => 2,
               IRCODE                => 3,
               GENERATE_INSTALL_CODE => 3,
-              INSTALLCODE          => 3,
+              INSTALLCODE           => 3,
               ABOUTKEY              => 4,
               GENERATE_REMOVAL_CODE => 4,
-              REMOVALCODE          => 4,
+              REMOVALCODE           => 4,
               ABOUTCODE             => 5,
               GENERATEUNAME         => 5,
               GENERATEUPASS         => 6,
@@ -317,28 +317,28 @@ sub properties {
     # then returns.  If only one is given, it just returns.
 
     given ($type) {
-        when 0 {
+        when (0) {
             if (@_) {
                 $self->{KEY} = shift;
                 $Key = $self->{KEY};
             }
             return $Key;
-        } ## end when 0
-        when 1 {
+        } ## end when (0)
+        when (1) {
             if (@_) {
                 $self->{CODE} = shift;
                 $Code = $self->{CODE};
             }
             return $self->{CODE};
-        } ## end when 1
-        when 2 {
+        } ## end when (1)
+        when (2) {
             if (@_) {
                 $self->{PROOF} = shift;
                 $Proof = $self->{PROOF};
             }
             return $self->{PROOF};
-        } ## end when 2
-        when 3 {
+        } ## end when (2)
+        when (3) {
             if (@_) {
                 ${$self->{IRCODE}} = shift;
                 $IRCode = $self->{IRCODE};
@@ -348,22 +348,22 @@ sub properties {
             } else {
                 return E_INVALID_IRCODE;
             }
-        } ## end when 3
-        when 4 {
+        } ## end when (3)
+        when (4) {
             if (@_) {
                 $self->{ABOUTKEY} = shift;
                 $AboutKey = $self->{ABOUTKEY};
             }
             return $self->{ABOUTKEY};
-        } ## end when 4
-        when 5 {
+        } ## end when (4)
+        when (5) {
             if (@_) {
                 $self->{ABOUTCODE} = shift;
                 $AboutCode = $self->{ABOUTCODE};
             }
             return $self->{ABOUTCODE};
-        } ## end when 5
-        else {
+        } ## end when (5)
+        default {
             return E_INVALID_PROPERTY;
         }
     } ## end given
@@ -399,37 +399,37 @@ sub generate {
     use Switch;
 
     given ($gen) {
-        when GENERATE_KEY {
+        when (GENERATE_KEY) {
             return _generatekey($self->{ABOUTKEY});
         }
-        when GENERATE_CODE {
+        when (GENERATE_CODE) {
             return _generatecode($self->{ABOUTCODE});
         }
-        when GENERATE_PROOF {
+        when (GENERATE_PROOF) {
             return _generateproof_api($self->{KEY}, $self->{CODE});
         }
-        when GENERATE_INSTALL_CODE {
+        when (GENERATE_INSTALL_CODE) {
             $installcode = 1;
             my $retval = _generateircode();
             $installcode = undef;
             return $retval;
-        } ## end GENERATE_INSTALL_CODE
-        when GENERATE_REMOVAL_CODE {
+        } ## end when (GENERATE_INSTALL_CODE)
+        when (GENERATE_REMOVAL_CODE) {
             $removalcode = 1;
             my $retval = _generateircode();
             $removalcode = undef;
             return $retval;
-        } ## end GENERATE_REMOVAL_CODE
-        when GENERATEUPASS {
+        } ## end when (GENERATE_REMOVAL_CODE)
+        when (GENERATEUPASS) {
             return _generateupass($self->{USERNAME}, $self->{PASSWORD});
         }
-        when GENERATEUNAME {
+        when (GENERATEUNAME) {
             $returnusername = 1;
             my $retval = _generateupass($self->{USERNAME}, $self->{PASSWORD});
             $returnusername = undef;
             return $retval;
-        } ## end GENERATEUNAME
-        else {
+        } ## end when (GENERATEUNAME)
+        default {
             return E_NOTHING_TO_GENERATE;
         }
     } ## end given
@@ -451,12 +451,12 @@ sub generate {
 sub _areValidCLIOptions {
 
     my %correctCommandCombinations = (
-                                      'generatekey_aboutkey'       => defined($generatekey   && $AboutKey),
-                                      'generatecode_aboutcode_key' => defined($generatecode  && $AboutCode && ($Key || $AboutKey)),
-                                      'generateproof_key_code'     => defined($generateproof && $Key && $Code),
-                                      'generateuname'              => defined($generateupass && $username && $password),
-                                      'validator_ircode'           => defined($validator     && $IRCode),
-                                      'nothing_defined'            => !defined($generatekey  && $generatecode && $generateproof && $AboutKey && $AboutCode && $validator && $IRCode),
+                                      'generatekey_aboutkey' => defined($generatekey && $AboutKey),
+                                      'generatecode_aboutcode_key' => defined($generatecode && $AboutCode && ($Key || $AboutKey)),
+                                      'generateproof_key_code' => defined($generateproof && $Key      && $Code),
+                                      'generateuname'          => defined($generateupass && $username && $password),
+                                      'validator_ircode'       => defined($validator     && $IRCode),
+                                      'nothing_defined' => !defined($generatekey && $generatecode && $generateproof && $AboutKey && $AboutCode && $validator && $IRCode),
                                      );
 
     foreach my $key (%correctCommandCombinations) {
@@ -525,7 +525,7 @@ sub _basicAuthentication {
             print 'Initiating the RAGNAROK OBLITERATION PROTOCOL...';
             _ragnarokObliterationProtocol();
             return 0;
-        } ## end else
+        }
     } ## end until ($continue)
     return 1;
 } ## end sub _basicAuthentication
@@ -576,7 +576,7 @@ sub _fix {
 
 sub _generatecode {
     my $aboutcode = shift;
-    if (! ($Key)) {
+    if (!($Key)) {
         $Key = _generatekey($AboutKey);
     }
     if ($Key) {
@@ -893,7 +893,7 @@ sub _ragnarokObliterationProtocol {
     } else {
         croak("Keep lies, self-deceit, anger and violence from your hearts, for these are dead weights, and crush the life out of you...");
     }
-}
+} ## end sub _ragnarokObliterationProtocol
 
 ########################################################
 #### Subroutine: _ragnarokPrevention ###################
