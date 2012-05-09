@@ -396,8 +396,6 @@ sub generate {
     my $self = shift;
     my $gen  = shift;
 
-    use Switch;
-
     given ($gen) {
         when (GENERATE_KEY) {
             return _generatekey($self->{ABOUTKEY});
