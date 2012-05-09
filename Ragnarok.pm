@@ -318,29 +318,29 @@ sub properties {
     # if two arguments are given, it sets the first to the second
     # then returns.  If only one is given, it just returns.
 
-    switch ($type) {
-        case 0 {
+    given ($type) {
+        when 0 {
             if (@_) {
                 $self->{KEY} = shift;
                 $Key = $self->{KEY};
             }
             return $Key;
-        } ## end case 0
-        case 1 {
+        } ## end when 0
+        when 1 {
             if (@_) {
                 $self->{CODE} = shift;
                 $Code = $self->{CODE};
             }
             return $self->{CODE};
-        } ## end case 1
-        case 2 {
+        } ## end when 1
+        when 2 {
             if (@_) {
                 $self->{PROOF} = shift;
                 $Proof = $self->{PROOF};
             }
             return $self->{PROOF};
-        } ## end case 2
-        case 3 {
+        } ## end when 2
+        when 3 {
             if (@_) {
                 ${$self->{IRCODE}} = shift;
                 $IRCode = $self->{IRCODE};
@@ -350,25 +350,25 @@ sub properties {
             } else {
                 return E_INVALID_IRCODE;
             }
-        } ## end case 3
-        case 4 {
+        } ## end when 3
+        when 4 {
             if (@_) {
                 $self->{ABOUTKEY} = shift;
                 $AboutKey = $self->{ABOUTKEY};
             }
             return $self->{ABOUTKEY};
-        } ## end case 4
-        case 5 {
+        } ## end when 4
+        when 5 {
             if (@_) {
                 $self->{ABOUTCODE} = shift;
                 $AboutCode = $self->{ABOUTCODE};
             }
             return $self->{ABOUTCODE};
-        } ## end case 5
+        } ## end when 5
         else {
             return E_INVALID_PROPERTY;
         }
-    } ## end switch
+    } ## end given
 } ## end sub properties
 
 =pod
@@ -400,32 +400,32 @@ sub generate {
 
     use Switch;
 
-    switch ($gen) {
-        case GENERATE_KEY {
+    given ($gen) {
+        when GENERATE_KEY {
             return _generatekey($self->{ABOUTKEY});
         }
-        case GENERATE_CODE {
+        when GENERATE_CODE {
             return _generatecode($self->{ABOUTCODE});
         }
-        case GENERATE_PROOF {
+        when GENERATE_PROOF {
             return _generateproof_api($self->{KEY}, $self->{CODE});
         }
-        case GENERATE_INSTALL_CODE {
+        when GENERATE_INSTALL_CODE {
             $installcode = 1;
             my $retval = _generateircode();
             $installcode = undef;
             return $retval;
         } ## end GENERATE_INSTALL_CODE
-        case GENERATE_REMOVAL_CODE {
+        when GENERATE_REMOVAL_CODE {
             $removalcode = 1;
             my $retval = _generateircode();
             $removalcode = undef;
             return $retval;
         } ## end GENERATE_REMOVAL_CODE
-        case GENERATEUPASS {
+        when GENERATEUPASS {
             return _generateupass($self->{USERNAME}, $self->{PASSWORD});
         }
-        case GENERATEUNAME {
+        when GENERATEUNAME {
             $returnusername = 1;
             my $retval = _generateupass($self->{USERNAME}, $self->{PASSWORD});
             $returnusername = undef;
@@ -434,7 +434,7 @@ sub generate {
         else {
             return E_NOTHING_TO_GENERATE;
         }
-    } ## end switch
+    } ## end given
 } ## end sub generate
 
 ### END OO CLASS IMPLEMENTATION
