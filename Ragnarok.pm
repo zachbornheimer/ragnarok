@@ -73,10 +73,14 @@ The Ragnarok Prevention Module contains the following error codes:
 
 =over 4
 
+=item -5
+This error, also known as E_CODE_NOT_DEFINED, comes about if $Code
+or $AboutCode are not set.
+
 =item -4
 
 This error, also known as E_KEY_NOT_DEFINED, comes about if $Key
-or $AboutKey are not set during the _generatecode algorithm.
+or $AboutKey are not set.
 
 =item -3
 
@@ -173,6 +177,7 @@ sub _removeTrailingLineBreak;
 
 my ($Key, $Code, $Proof, $AboutKey, $AboutCode, $installcode, $removalcode, $validator, $IRCode, $generatekey, $generatecode, $generateproof, $generateupass, $username, $password, $returnusername,);
 use constant {
+              E_CODE_NOT_DEFINED    => -5,
               E_KEY_NOT_DEFINED     => -4,
               E_NOTHING_TO_GENERATE => -3,
               E_INVALID_IRCODE      => -2,
@@ -196,7 +201,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.5',
+              VERSION               => '0.7.6',
              };    ## end constant declarations
 
 ### Module Info
@@ -204,9 +209,9 @@ require Exporter;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 @ISA = qw(Exporter AutoLoader);
 
-@EXPORT = qw ( new properties E_KEY_NOT_DEFINED E_NOTHING_TO_GENERATE
-     E_INVALID_IRCODE E_INVALID_PROPERTY KEY CODE PROOF IRCODE 
-     ABOUTKEY ABOUTCODE USERNAME PASSWORD GENERATE_KEY
+@EXPORT = qw ( new properties E_CODE_NOT_DEFINED E_KEY_NOT_DEFINED
+     E_NOTHING_TO_GENERATE E_INVALID_IRCODE E_INVALID_PROPERTY KEY
+     CODE PROOF IRCODE ABOUTKEY ABOUTCODE USERNAME PASSWORD GENERATE_KEY
      GENERATE_CODE GENERATE_PROOF GENERATE_INSTALL_CODE REMOVALCODE
      GENERATE_REMOVAL_CODE GENERATEUPASS GENERATEUNAME INSTALLCODE
     );
@@ -408,6 +413,20 @@ sub generate {
             return _generatecode($self->{ABOUTCODE});
         }
         when (GENERATE_PROOF) {
+            if (!$self->{KEY} || $self->{KEY} == "") {
+                if (!$self->{ABOUTKEY} || $self->{ABOUTKEY} == "") {
+                   return(E_KEY_NOT_DEFINED);
+                } else {
+                    $self->{KEY} = _generatekey($self->{ABOUTKEY});
+                }
+            }
+            if (!$self->{CODE} || $self->{CODE} == "") {
+                if (!$self->{ABOUTCODE} || $self->{ABOUTCODE} == "") {
+                   return(E_CODE_NOT_DEFINED);
+                } else {
+                   $self->{CODE} = _generatecode($self->{ABOUTCODE});
+                }
+            }
             return _generateproof_api($self->{KEY}, $self->{CODE});
         }
         when (GENERATE_INSTALL_CODE) {
