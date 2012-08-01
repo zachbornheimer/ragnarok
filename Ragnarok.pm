@@ -196,7 +196,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.4',
+              VERSION               => '0.7.5',
              };    ## end constant declarations
 
 ### Module Info
@@ -246,6 +246,11 @@ GetOptions(
 
 my $madeKey;
 MAIN: {
+    foreach my $val (\$AboutKey, \$AboutCode, \$Key, \$Code, \$Proof, \$validator, \$IRCode, \$username, \$password, \$returnusername, \$generatekey, \$generatecode, \$generateproof, \$installcode, \$generateupass) {
+        if ($val == "") {
+            $val = undef;
+        }
+    }
     exit unless (_areValidCLIOptions());
     if ($Key) {
         _makeKey(\$Key);
