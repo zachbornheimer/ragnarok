@@ -23,7 +23,9 @@
  
 =over 4
 
-=item version
+=item v 
+
+=item version [-v gives just the version number.]
 
 =item returnusername
 
@@ -201,7 +203,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.6',
+              VERSION               => '0.7.7',
              };    ## end constant declarations
 
 ### Module Info
@@ -231,6 +233,9 @@ GetOptions(
     'returnusername' => \$returnusername,
     'version'        => sub {
         print 'Ragnarok Encryption Module Version ' . $VERSION . "\n";
+    },
+    'v'        => sub {
+        print $VERSION;
     },
     'generate=s' => sub {
         my ($option, $value) = @_;
