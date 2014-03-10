@@ -15,7 +15,7 @@
 =head1 DESCRIPTION
  
  The Ragnarok Prevention Module is a part of the ANUBIS Package.
- It contains the encrption algorithm for ANUBIS API.
+ It contains the encryption algorithm for the ANUBIS API.
  
 =head1 ARGUMENTS
  
