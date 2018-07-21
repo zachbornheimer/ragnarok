@@ -150,6 +150,7 @@ use Math::Round;
 use Getopt::Long;
 use Carp;
 use v5.10;
+use Autoloader qw/Autoloader/;
 require constant;
 require Cwd;
 
