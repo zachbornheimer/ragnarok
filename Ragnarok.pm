@@ -203,7 +203,7 @@ use constant {
               GENERATEUPASS         => 6,
               ITERATION_NUMBER      => 13,
               AVERAGE_KEY_SIZE      => 400,
-              VERSION               => '0.7.7',
+              VERSION               => '0.7.8',
              };    ## end constant declarations
 
 ### Module Info
@@ -234,7 +234,7 @@ GetOptions(
     'version'        => sub {
         print 'Ragnarok Encryption Module Version ' . $VERSION . "\n";
     },
-    'v'        => sub {
+    'v' => sub {
         print $VERSION;
     },
     'generate=s' => sub {
@@ -257,7 +257,7 @@ GetOptions(
 my $madeKey;
 MAIN: {
     foreach my $val (\$AboutKey, \$AboutCode, \$Key, \$Code, \$Proof, \$validator, \$IRCode, \$username, \$password, \$returnusername, \$generatekey, \$generatecode, \$generateproof, \$installcode, \$generateupass) {
-        if ($val == "") {
+        if ($val eq "") {
             $val = undef;
         }
     }
@@ -331,57 +331,49 @@ sub properties {
     # if two arguments are given, it sets the first to the second
     # then returns.  If only one is given, it just returns.
 
-    given ($type) {
-        when (0) {
-            if (@_) {
-                $self->{KEY} = shift;
-                $Key = $self->{KEY};
-            }
-            return $Key;
-        } ## end when (0)
-        when (1) {
-            if (@_) {
-                $self->{CODE} = shift;
-                $Code = $self->{CODE};
-            }
-            return $self->{CODE};
-        } ## end when (1)
-        when (2) {
-            if (@_) {
-                $self->{PROOF} = shift;
-                $Proof = $self->{PROOF};
-            }
-            return $self->{PROOF};
-        } ## end when (2)
-        when (3) {
-            if (@_) {
-                ${$self->{IRCODE}} = shift;
-                $IRCode = $self->{IRCODE};
-            }
-            if (_isValidInstallRemovalCode($self->{IRCODE})) {
-                return $self->{IRCODE};
-            } else {
-                return E_INVALID_IRCODE;
-            }
-        } ## end when (3)
-        when (4) {
-            if (@_) {
-                $self->{ABOUTKEY} = shift;
-                $AboutKey = $self->{ABOUTKEY};
-            }
-            return $self->{ABOUTKEY};
-        } ## end when (4)
-        when (5) {
-            if (@_) {
-                $self->{ABOUTCODE} = shift;
-                $AboutCode = $self->{ABOUTCODE};
-            }
-            return $self->{ABOUTCODE};
-        } ## end when (5)
-        default {
-            return E_INVALID_PROPERTY;
+    if ($type eq 0) {
+        if (@_) {
+            $self->{KEY} = shift;
+            $Key = $self->{KEY};
         }
-    } ## end given
+        return $Key;
+    } elsif ($type eq 1) {
+        if (@_) {
+            $self->{CODE} = shift;
+            $Code = $self->{CODE};
+        }
+        return $self->{CODE};
+    } elsif ($type eq 2) {
+        if (@_) {
+            $self->{PROOF} = shift;
+            $Proof = $self->{PROOF};
+        }
+        return $self->{PROOF};
+    } elsif ($type eq 3) {
+        if (@_) {
+            ${$self->{IRCODE}} = shift;
+            $IRCode = $self->{IRCODE};
+        }
+        if (_isValidInstallRemovalCode($self->{IRCODE})) {
+            return $self->{IRCODE};
+        } else {
+            return E_INVALID_IRCODE;
+        }
+    } elsif ($type eq 4) {
+        if (@_) {
+            $self->{ABOUTKEY} = shift;
+            $AboutKey = $self->{ABOUTKEY};
+        }
+        return $self->{ABOUTKEY};
+    } elsif ($type eq 5) {
+        if (@_) {
+            $self->{ABOUTCODE} = shift;
+            $AboutCode = $self->{ABOUTCODE};
+        }
+        return $self->{ABOUTCODE};
+    } else {
+        return E_INVALID_PROPERTY;
+    }
 } ## end sub properties
 
 =pod
@@ -410,55 +402,46 @@ sub generate {
     my $self = shift;
     my $gen  = shift;
 
-    given ($gen) {
-        when (GENERATE_KEY) {
-            return _generatekey($self->{ABOUTKEY});
-        }
-        when (GENERATE_CODE) {
-            return _generatecode($self->{ABOUTCODE});
-        }
-        when (GENERATE_PROOF) {
-            if (!$self->{KEY} || $self->{KEY} == "") {
-                if (!$self->{ABOUTKEY} || $self->{ABOUTKEY} == "") {
-                   return(E_KEY_NOT_DEFINED);
-                } else {
-                    $self->{KEY} = _generatekey($self->{ABOUTKEY});
-                }
+    if ($gen eq GENERATE_KEY) {
+        return _generatekey($self->{ABOUTKEY});
+    } elsif ($gen eq GENERATE_CODE) {
+        return _generatecode($self->{ABOUTCODE});
+    } elsif ($gen eq GENERATE_PROOF) {
+        if (!$self->{KEY} || $self->{KEY} eq "") {
+            if (!$self->{ABOUTKEY} || $self->{ABOUTKEY} eq "") {
+                return (E_KEY_NOT_DEFINED);
+            } else {
+                $self->{KEY} = _generatekey($self->{ABOUTKEY});
             }
-            if (!$self->{CODE} || $self->{CODE} == "") {
-                if (!$self->{ABOUTCODE} || $self->{ABOUTCODE} == "") {
-                   return(E_CODE_NOT_DEFINED);
-                } else {
-                   $self->{CODE} = _generatecode($self->{ABOUTCODE});
-                }
+        } ## end if (!$self->{KEY} || $self...)
+        if (!$self->{CODE} || $self->{CODE} eq "") {
+            if (!$self->{ABOUTCODE} || $self->{ABOUTCODE} eq "") {
+                return (E_CODE_NOT_DEFINED);
+            } else {
+                $self->{CODE} = _generatecode($self->{ABOUTCODE});
             }
-            return _generateproof_api($self->{KEY}, $self->{CODE});
-        }
-        when (GENERATE_INSTALL_CODE) {
-            $installcode = 1;
-            my $retval = _generateircode();
-            $installcode = undef;
-            return $retval;
-        } ## end when (GENERATE_INSTALL_CODE)
-        when (GENERATE_REMOVAL_CODE) {
-            $removalcode = 1;
-            my $retval = _generateircode();
-            $removalcode = undef;
-            return $retval;
-        } ## end when (GENERATE_REMOVAL_CODE)
-        when (GENERATEUPASS) {
-            return _generateupass($self->{USERNAME}, $self->{PASSWORD});
-        }
-        when (GENERATEUNAME) {
-            $returnusername = 1;
-            my $retval = _generateupass($self->{USERNAME}, $self->{PASSWORD});
-            $returnusername = undef;
-            return $retval;
-        } ## end when (GENERATEUNAME)
-        default {
-            return E_NOTHING_TO_GENERATE;
-        }
-    } ## end given
+        } ## end if (!$self->{CODE} || ...)
+        return _generateproof_api($self->{KEY}, $self->{CODE});
+    } elsif ($gen eq GENERATE_INSTALL_CODE) {
+        $installcode = 1;
+        my $retval = _generateircode();
+        $installcode = undef;
+        return $retval;
+    } elsif ($gen eq GENERATE_REMOVAL_CODE) {
+        $removalcode = 1;
+        my $retval = _generateircode();
+        $removalcode = undef;
+        return $retval;
+    } elsif ($gen eq GENERATEUPASS) {
+        return _generateupass($self->{USERNAME}, $self->{PASSWORD});
+    } elsif ($gen eq GENERATEUNAME) {
+        $returnusername = 1;
+        my $retval = _generateupass($self->{USERNAME}, $self->{PASSWORD});
+        $returnusername = undef;
+        return $retval;
+    } else {
+        return E_NOTHING_TO_GENERATE;
+    }
 } ## end sub generate
 
 ### END OO CLASS IMPLEMENTATION
