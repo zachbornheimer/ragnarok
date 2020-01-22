@@ -1011,23 +1011,12 @@ __END__
 =pod
  
 =head1 COPYRIGHT
- 
- Copyright 2012 Z. Bornheimer.
- 
- Permission is granted to copy, distribute and/or modify this 
- documentation under the terms of the GNU Free Documentation 
- License, Version 1.3 or any later version published by the 
- Free Software Foundation; with no Invariant Sections, with 
- no Front-Cover Texts, and with no Back-Cover Texts.
- 
- Ragnarok itself is free software: you can redistribute it
- and/or modify it under the terms of the GNU Lesser General
- Public License as published by the Free Software Foundation, 
- either version 3 of the License, or any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
- 
+
+ Copyright 2012 Z. Bornheimer. All rights reserved.
+
+
+=head1 LICENSE
+
+This is released under the Artistic License 2.0. See L<perlartistic>.                                                                                                             
+
 =cut
